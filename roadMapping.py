@@ -30,3 +30,10 @@ def loadGraph(path="atlantaGraph.graphml"):
         graph = ox.graph_from_place("Atlanta, Georgia, USA", network_type='drive')
         ox.save_graphml(graph, path)
         return graph
+    
+def addCrashesToEdges(df, graph):
+    try:
+        df['nearest_edge'] = df.apply(lambda row: ox.distance.nearest_edges(graph, row['lon'], row['lat']), axis=1)
+    except Exception as e:
+        raise ValueError(f"Failed to add crash to edges. Error is {e}")
+    return df
