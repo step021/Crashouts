@@ -1,0 +1,32 @@
+name: crashoutEnv
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.10
+  - pandas
+  - numpy
+  - osmnx
+  - geopandas
+  - shapely
+  - pyproj
+  - rtree
+  - fiona
+  - networkx
+  - matplotlib
+  - jupyterlab
+  - scipy
+  - requests
+  - pip
+  - pip:
+    - tqdm
+
+#To create: 'conda env create -f environment.yml'
+
+#To activate: 'conda activate crashoutEnv'
+
+#To delete: 'conda remove --name crashoutEnv --all'
+
+#To update: 'conda env update -f environment.yml --prune'
