@@ -21,7 +21,6 @@ def loadData(path="data/CleanedCrashData.csv"):
 
     return df
 
-
 def loadGraph(path="atlantaGraph.graphml"):
     if os.path.exists(path):
         return ox.load_graphml(path)
