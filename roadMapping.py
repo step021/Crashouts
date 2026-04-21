@@ -32,7 +32,7 @@ def loadGraph(path="atlantaGraph.graphml"):
     
 def addCrashesToEdges(df, graph):
     try:
-        df['nearest_edge'] = df.apply(lambda row: ox.distance.nearest_edges(graph, row['lon'], row['lat']), axis=1)
+        df['nearest_edge'] = list(ox.distance.nearest_edges(graph, df['lon'].to_numpy(), df['lat'].to_numpy()))
     except Exception as e:
         raise ValueError(f"Failed to add crash to edges. Error is {e}")
     return df
