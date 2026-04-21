@@ -36,3 +36,7 @@ def addCrashesToEdges(df, graph):
     except Exception as e:
         raise ValueError(f"Failed to add crash to edges. Error is {e}")
     return df
+
+def countCrashesPerEdge(df):
+    edgeCounts = df.groupby("nearest_edge").size().reset_index(name="crash_count").sort_values(by="crash_count", ascending=False)
+    return edgeCounts
