@@ -12,6 +12,7 @@ def main():
         df = roadMapping.addCrashesToEdges(df, graph)
         cachingLogic.saveMappedCrashes(df, "cache/mappedCrashes.pkl")
 
+    #Can delete this later, used to test if the pipeline is working.
     print(roadMapping.countCrashesPerEdge(df))
 
     print("Finished")
