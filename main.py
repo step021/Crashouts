@@ -1,22 +1,35 @@
+import os
 import roadMapping
 import cachingLogic
-import os
+import penalty
+
+WEIGHTED_GRAPH_PATH = "cache/weightedGraph.graphml"
+MAPPED_CRASHES_PATH = "cache/mappedCrashes.pkl"
 
 def main():
-    graph = roadMapping.loadGraph()
-    
-    if os.path.exists("cache/mappedCrashes.pkl"):
-        df = cachingLogic.loadMappedCrashes("cache/mappedCrashes.pkl")
+    if os.path.exists(WEIGHTED_GRAPH_PATH):
+        graph = cachingLogic.loadWeightedGraph(WEIGHTED_GRAPH_PATH)
     else:
-        df = roadMapping.loadData()
-        df = roadMapping.addCrashesToEdges(df, graph)
-        cachingLogic.saveMappedCrashes(df, "cache/mappedCrashes.pkl")
+        graph = roadMapping.loadGraph()
+        graph = roadMapping.addTravelTimes(graph)
 
-    #Can delete this later, used to test if the pipeline is working.
-    print(roadMapping.countCrashesPerEdge(df))
+        if os.path.exists(MAPPED_CRASHES_PATH):
+            df = cachingLogic.loadMappedCrashes(MAPPED_CRASHES_PATH)
+        else:
+            df = roadMapping.loadData()
+            df = roadMapping.addCrashesToEdges(df, graph)
+            cachingLogic.saveMappedCrashes(df, MAPPED_CRASHES_PATH)
+
+        penalties = penalty.computeEdgePenalties(df, graph)
+        graph = penalty.addPenaltiesToGraph(graph, penalties)
+
+        cachingLogic.saveWeightedGraph(graph, WEIGHTED_GRAPH_PATH)
+
+    #This needs to eventually become an API call
+    isRaining = True
+    graph = penalty.finalWeights(graph, isRaining=isRaining)
 
     print("Finished")
-
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,5 @@
 import os
+import osmnx as ox
 import pandas as pd
 import roadMapping
 
@@ -17,3 +18,12 @@ def getMappedCrashes(df, graph, path="cache/mappedCrashes.pkl"):
     df = roadMapping.addCrashesToEdges(df, graph)
     saveMappedCrashes(df, path)
     return df
+
+def saveWeightedGraph(graph, path="cache/weightedGraph.graphml"):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    ox.save_graphml(graph, path)
+
+def loadWeightedGraph(path="cache/weightedGraph.graphml"):
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Cannot find {path}")
+    return ox.load_graphml(path)

@@ -40,3 +40,12 @@ def addCrashesToEdges(df, graph):
 def countCrashesPerEdge(df):
     edgeCounts = df.groupby("nearest_edge").size().reset_index(name="crash_count").sort_values(by="crash_count", ascending=False)
     return edgeCounts
+
+def addTravelTimes(graph):
+    try:
+        graph = ox.add_edge_speeds(graph)
+        graph = ox.add_edge_travel_times(graph)
+    except Exception as e:
+        raise ValueError(f"Failed to add travel times to graph. Error is {e}")
+
+    return graph
