@@ -26,8 +26,8 @@ def addPenaltiesToGraph(graph, penalties):
     
 def finalWeights(graph, isRaining=False):
     for u, v, k, data in graph.edges(keys=True, data=True):
-        travelTime = data.get("travel_time", 0)
-        penalty = data.get("crash_penalty", 0)
+        travelTime = float(data.get("travel_time", 0))
+        penalty = float(data.get("crash_penalty", 0))
         penalty *= R_TABLE[isRaining]
         data['weight'] = travelTime + penalty
     return graph
