@@ -22,6 +22,8 @@ dependencies:
   - pip
   - pip:
     - tqdm
+    - fastapi
+    - uvicorn[standard]
 
 #To create: 'conda env create -f environment.yml'
 
