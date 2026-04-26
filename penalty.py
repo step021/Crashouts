@@ -25,9 +25,17 @@ def addPenaltiesToGraph(graph, penalties):
     return graph
     
 def finalWeights(graph, isRaining=False):
+    RISK_SENSITIVITY = 15.0
     for u, v, k, data in graph.edges(keys=True, data=True):
         travelTime = float(data.get("travel_time", 0))
-        penalty = float(data.get("crash_penalty", 0))
-        penalty *= R_TABLE[isRaining]
+        length = float(data.get("length", 1.0))
+        raw_density = data.get("crash_penalty", 0)
+        if isinstance(raw_density, list): 
+            raw_density = raw_density[0]
+        raw_density = float(raw_density)
+        crashes = raw_density * length
+        smoothed_density = crashes / (length + 50.0)
+        penalty = smoothed_density * travelTime * R_TABLE[isRaining] * RISK_SENSITIVITY
+        data['crash_penalty'] = crashes
         data['weight'] = travelTime + penalty
     return graph

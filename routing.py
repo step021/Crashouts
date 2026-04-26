@@ -15,7 +15,7 @@ def calculate_routes(graph, source, target):
         v_lon = graph.nodes[v].get('x', 0)
         
         distance = ox.distance.great_circle(u_lat, u_lon, v_lat, v_lon)
-        estimated_time = distance / 15.0 
+        estimated_time = distance / 35.0 
         return estimated_time
     
     try:
@@ -41,7 +41,8 @@ def path_stats(graph, path):
     for i in range(len(path) - 1):
         u = path[i]
         v = path[i+1]
-        edge_data = graph.get_edge_data(u, v)[0] 
-        total_time += float(edge_data.get('travel_time', 0))
-        total_danger += float(edge_data.get('crash_penalty', 0))
+        edge_data = graph.get_edge_data(u, v)
+        best_edge = min(edge_data.values(), key=lambda x: x.get('weight', float('inf')))
+        total_time += float(best_edge.get('travel_time', 0))
+        total_danger += float(best_edge.get('crash_penalty', 0))
     return round(total_time / 60, 2), round(total_danger, 2)
