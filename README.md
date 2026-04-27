@@ -1,26 +1,67 @@
-# Crashouts
+CRASHOUTS - SAFER ROUTE NAVIGATION FOR ATLANTA
+================================================
 
-A project focused on analyzing and visualizing car crash data to better understand traffic accidents, contributing factors, and outcomes.
+DESCRIPTION
+-----------
+Crashouts is a safer-route navigation tool for the Atlanta metro area. Given a
+start and end location, it computes two driving routes: a baseline fastest path
+and a crash-penalized safer path that trades a small amount of travel time to
+avoid road segments with high historical accident rates.
 
-## Overview
+The backend ingests five years of Georgia crash data (2020-2024), maps each
+incident to its nearest road segment using OpenStreetMap, and weights edges by
+crash severity and collision type. A rain multiplier amplifies penalties when
+wet-road conditions are selected. Routes are found using Dijkstra (baseline) and
+A* (safer) on the weighted graph.
 
-Crashouts is a data-driven project that explores car crash incidents. The goal is to surface meaningful insights from crash data, including patterns around location, time, severity, and contributing factors such as weather, road conditions, and driver behavior.
+The frontend is a browser-based map interface. Users click two points on an
+Atlanta street map, optionally toggle rain conditions, and receive both routes
+drawn as colored polylines alongside a panel showing estimated travel time and
+danger score for each.
 
-## Goals
 
-- Collect and organize car crash data from relevant sources
-- Analyze trends and patterns in crash occurrences
-- Visualize crash data to make findings accessible and actionable
-- Support safety research and informed decision-making
+INSTALLATION
+------------
+Prerequisites: Anaconda or Miniconda
 
-## Getting Started
+1. Clone the repository:
+   git clone https://github.com/step021/Crashouts.git
+   cd Crashouts
 
-More details on setup and usage will be added as the project develops.
+2. Create and activate the conda environment:
+   conda env create -f environment.yml
+   conda activate crashoutEnv
 
-## Contributing
+3. Build the weighted graph cache (one-time, takes a few minutes):
+   python main.py
 
-Contributions are welcome. Feel free to open issues or submit pull requests.
+   This downloads the Atlanta road network, maps crash records to edges, and
+   writes cache/weightedGraph.graphml. Subsequent runs skip this step.
 
-## License
+4. Install frontend dependencies:
+   cd frontend
+   npm install
+   cd ..
 
-This project is unlicensed. All rights reserved.
+
+EXECUTION
+---------
+Start the backend API (from the repo root):
+   uvicorn api:app --reload
+
+Start the frontend dev server (in a separate terminal):
+   cd frontend
+   npm run dev
+
+Open http://localhost:5173 in a browser.
+
+- Click once on the map to set a start point (blue marker)
+- Click again to set an end point (second marker)
+- Toggle "Raining conditions" if applicable
+- Click "Calculate Routes"
+
+The blue polyline shows the fastest baseline route; the green polyline shows the
+safer route optimized to avoid high-crash segments. Travel time (minutes) and
+danger score are displayed for both routes in the left panel.
+
+A third click on the map resets to a new start point.
